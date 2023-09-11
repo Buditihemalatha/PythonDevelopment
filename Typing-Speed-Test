@@ -1,0 +1,49 @@
+import time
+import random
+
+# List of sentences for the typing test
+sentences = [
+    "The quick brown fox jumps over the lazy dog",
+]
+
+def generate_sentence():
+    return random.choice(sentences)
+
+def typing_speed_test(countdown_duration=3):
+    # Adjust the countdown duration if needed (default is 3 seconds)
+    countdown_duration = max(1, countdown_duration)
+
+    sentence = generate_sentence()
+    print("Type the following sentence:")
+    print(sentence)
+
+    input("Press Enter when you're ready to start...")
+
+    print(f"Starting in {countdown_duration}...")
+    for i in range(countdown_duration, 0, -1):
+        print(f"{i}...")
+        time.sleep(1)
+
+    start_time = time.time()
+    user_input = input("Start typing: ")
+    end_time = time.time()
+
+    # Calculate typing speed in words per minute (WPM)
+    words = sentence.split()
+    time_elapsed = end_time - start_time
+    wpm = len(words) / (time_elapsed / 60)
+
+    # Calculate accuracy
+    correct_words = sum(1 for a, b in zip(user_input.split(), words) if a == b)
+    accuracy = (correct_words / len(words)) * 100
+
+    # Display the correct sentence
+    print("\nCorrect Sentence:")
+    print(sentence)
+
+    # Display typing results
+    print("\nTyping speed: {:.2f} WPM".format(wpm))
+    print("Accuracy: {:.2f}%".format(accuracy))
+
+# Adjust the countdown duration (e.g., 5 seconds) if needed
+typing_speed_test(countdown_duration=3)
