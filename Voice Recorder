@@ -1,0 +1,43 @@
+import pyaudio
+import wave
+
+# Parameters for audio recording
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 44100
+CHUNK = 1024
+RECORD_SECONDS = 10
+OUTPUT_FILENAME = "output.wav"
+
+def record_audio(filename, record_seconds=5):
+    audio = pyaudio.PyAudio()
+
+    try:
+        stream = audio.open(format=FORMAT, channels=CHANNELS,
+                            rate=RATE, input=True,
+                            frames_per_buffer=CHUNK)
+        frames = []
+
+        print("Recording...")
+        for _ in range(0, int(RATE / CHUNK * record_seconds)):
+            data = stream.read(CHUNK)
+            frames.append(data)
+
+        print("Finished recording.")
+
+        # Save the recorded audio to a WAV file
+        with wave.open(filename, 'wb') as wf:
+            wf.setnchannels(CHANNELS)
+            wf.setsampwidth(audio.get_sample_size(FORMAT))
+            wf.setframerate(RATE)
+            wf.writeframes(b''.join(frames))
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        audio.terminate()
+
+# Record audio for 20 seconds and save it to "output.wav"
+record_audio(OUTPUT_FILENAME, record_seconds=RECORD_SECONDS)
